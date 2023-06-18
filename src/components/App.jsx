@@ -12,9 +12,35 @@ import initialContacts from '../data/contacts';
 
 export class App extends Component {
   state = {
-    contacts: initialContacts,
+    contacts: [],
     filter: '',
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    // Перше завантаженн (пустий локалсторедж) контактів з json
+    if (contacts === null) {
+      this.setState({ contacts: initialContacts });
+      // Якщо всі контакти видалені (локалсторедж пустийрядок), контакти беруться з json
+    } else if (contacts.length < 3) {
+      this.setState({ contacts: initialContacts });
+      // Якщо в локалсторедж є контакти. вони беруться з нього
+    } else if (contacts !== null) {
+      this.setState({ contacts: JSON.parse(contacts) });
+    } else {
+      //
+      // } else if (this.state.contacts.length < 1) {
+      //   this.setState({ contacts: contactsData });
+      // } else {
+      console.log('Відсутні контакти!');
+    }
+  }
 
   addContact = ({ name, number }) => {
     const addContact = { id: nanoid(), name, number };
@@ -25,7 +51,6 @@ export class App extends Component {
     );
 
     if (currentName) {
-      // if (currentName && name.toLowerCase() === currentName.name.toLowerCase()) {
       alert(`${name} is already exist!`);
       return;
     }

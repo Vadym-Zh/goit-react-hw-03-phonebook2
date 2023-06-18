@@ -5,7 +5,7 @@ export const PhonebookSection = styled.section`
   justify-content: center;
 
   :first-child {
-    margin-bottom: 35px;
+    margin-bottom: 15px;
   }
 `;
 
